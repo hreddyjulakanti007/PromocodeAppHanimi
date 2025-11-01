@@ -21,10 +21,10 @@ public interface PromoCodeRepository extends JpaRepository<PromoCode, Long> {
     Optional<PromoCode> findByCodeAndTenantId(String code, String tenantId);
 
     @Query("SELECT p FROM PromoCode p WHERE p.tenantId = :tenantId " +
-            "AND (:code IS NULL OR p.code LIKE %:code%) " +
+            "AND (:code IS NULL OR p.code LIKE CONCAT('%', :code, '%')) " +
             "AND (:status IS NULL OR p.status = :status) " +
-            "AND (:startDate IS NULL OR p.createdAt >= :startDate) " +
-            "AND (:endDate IS NULL OR p.createdAt <= :endDate)")
+            "AND (CAST(:startDate AS timestamp) IS NULL OR p.createdAt >= :startDate) " +
+            "AND (CAST(:endDate AS timestamp) IS NULL OR p.createdAt <= :endDate)")
     List<PromoCode> findByFilters(
             @Param("tenantId") String tenantId,
             @Param("code") String code,
