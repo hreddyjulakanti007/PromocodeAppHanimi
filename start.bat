@@ -69,7 +69,7 @@ echo.
 echo Access URLs:
 echo    Frontend:        http://localhost:4200
 echo    Backend API:     http://localhost:8081
-echo    Swagger UI:      http://localhost:8081/swagger-ui.html
+echo    Swagger UI:      http://localhost:8081/swagger-ui/index.html
 echo    Keycloak Admin:  http://localhost:8080 (admin/admin)
 echo.
 echo Test Users:
