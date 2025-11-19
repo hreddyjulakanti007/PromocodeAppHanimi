@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/promo-codes/**").hasAnyRole("ADMIN", "BUSINESS")
+                        .requestMatchers(HttpMethod.POST, "/api/promo-codes/filter").hasAnyRole("ADMIN", "BUSINESS")
                         .requestMatchers("/api/promo-codes/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
