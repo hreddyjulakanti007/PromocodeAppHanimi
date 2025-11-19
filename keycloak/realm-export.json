@@ -126,6 +126,25 @@
       "attributes": {
         "tenant_id": "tenant2"
       }
+    },
+    {
+      "username": "business2",
+      "enabled": true,
+      "email": "business2@example.com",
+      "emailVerified": true,
+      "firstName": "Business",
+      "lastName": "Two",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "business123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["BUSINESS"],
+      "attributes": {
+        "tenant_id": "tenant2"
+      }
     }
   ]
 }
