@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     @Autowired
     private TenantFilter tenantFilter;
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -46,13 +46,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // to extract roles from Keycloak JWT
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
             var authorities = new java.util.ArrayList<org.springframework.security.core.GrantedAuthority>();
 
-            // Extract roles from realm_access.roles
+            // Key cloak realm_access roles converted to Spring Security authorized roles
             var realmAccess = jwt.getClaimAsMap("realm_access");
             if (realmAccess != null && realmAccess.containsKey("roles")) {
                 @SuppressWarnings("unchecked")
@@ -66,7 +67,7 @@ public class SecurityConfig {
 
         return jwtAuthenticationConverter;
     }
-
+    
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

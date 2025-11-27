@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
 
 @Slf4j
 @Service
@@ -78,13 +81,30 @@ public class PromoCodeService {
     public List<PromoCodeDTO> getPromoCodesByFilter(PromoCodeFilterDTO filter) {
         String tenantId = TenantContext.getTenantId();
         log.debug("Filtering promo codes for tenant: {}", tenantId);
+        Specification<PromoCode> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("tenantId"), tenantId));
 
-        return promoCodeRepository.findByFilters(
-                tenantId,
-                filter.getCode(),
-                filter.getStatus(),
-                filter.getStartDate(),
-                filter.getEndDate()).stream()
+            if (filter.getCode() != null && !filter.getCode().isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("code")), "%" + filter.getCode().toLowerCase() + "%"));
+            }
+
+            if (filter.getStatus() != null) {
+                predicates.add(cb.equal(root.get("status"), filter.getStatus()));
+            }
+
+            if (filter.getStartDate() != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), filter.getStartDate()));
+            }
+
+            if (filter.getEndDate() != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), filter.getEndDate()));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return promoCodeRepository.findAll(spec).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
